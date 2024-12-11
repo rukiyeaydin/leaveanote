@@ -13,7 +13,6 @@ const props = defineProps({
 const noteText = ref('');
 
 const sendNote = async () => {
-    // Giriş yapan kullanıcının bilgilerini al
     const currentUser = auth.currentUser;
 
     if (!currentUser || !props.selectedPerson) {
@@ -21,28 +20,25 @@ const sendNote = async () => {
         return;
     }
 
-    // Not boş mu kontrol et
     if (!noteText.value.trim()) {
         alert('Not içeriği boş olamaz');
         return;
     }
 
     try {
-        // Not dokümanını Firestore'a ekle
         await addDoc(collection(db, 'notes'), {
             from: {
                 id: currentUser.uid,
                 name: currentUser.displayName || currentUser.email
             },
             to: {
-                id: props.selectedPerson.id,  // Şimdi kesin olarak bir id var
+                id: props.selectedPerson.id,  
                 name: props.selectedPerson.name
             },
             text: noteText.value,
             createdAt: new Date()
         });
 
-        // Notu gönderdikten sonra textarea'yı temizle
         noteText.value = '';
         alert('Not başarıyla gönderildi!');
     } catch (error) {

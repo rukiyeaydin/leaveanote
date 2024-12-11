@@ -56,4 +56,3 @@ openNote.value = openNote.value === index ? null : index;
         </div>
     </div>
 </template>
-  
