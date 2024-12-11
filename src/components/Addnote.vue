@@ -14,6 +14,8 @@ const noteText = ref('');
 
 const sendNote = async () => {
     const currentUser = auth.currentUser;
+    // console.log(currentUser);
+    
 
     if (!currentUser || !props.selectedPerson) {
         alert('Lütfen bir kullanıcı seçin ve giriş yapın');
