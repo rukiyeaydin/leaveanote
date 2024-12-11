@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from 'vue';
+
+import { onAuthStateChanged } from '../firebase/firebase.js';
+import { auth } from '../firebase/firebase.js';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
   people: {
@@ -23,6 +26,22 @@ const toggleContent = (direction) => {
     showContent.value = true;
   }
 };
+
+const currentUser = ref(null);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser.value = user; 
+  } else {
+    currentUser.value = null; 
+  }
+});
+
+const filteredPeople = computed(() => {
+  if (!currentUser.value) return props.people; 
+  return props.people.filter(person => person.email !== currentUser.value.email); 
+})
+
 </script>
 
 <template>
@@ -35,7 +54,7 @@ const toggleContent = (direction) => {
         <p class="font-bold text-2xl border-b-2 mb-5 pb-2 border-[rgb(0,173,181)]">Kişiler</p>
         <ul class="custom-scrollbar overflow-y-auto max-h-[calc(100vh-180px)] pr-2">
           <li 
-            v-for="(person, index) in people" 
+            v-for="(person, index) in filteredPeople" 
             :key="index" 
             @click="handlePersonClick(person)"
             class="p-4 mb-3 rounded-xl bg-[#393E46] shadow-lg flex items-center hover:bg-gray-600 transition-all duration-200 cursor-pointer">
